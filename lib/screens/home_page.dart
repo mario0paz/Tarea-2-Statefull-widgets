@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:statefull_pratice/components/MenuCustomised.dart';
-import 'package:statefull_pratice/components/text_blank.dart';
+import 'package:Tarea-2-Statefull-widgets/components/MenuCustomised.dart';
+import 'package:Tarea-2-Statefull-widgets/components/text_blank.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,8 +11,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _capturedValue = 0;
-  int _capturedValue2 = 0;
+  int _value1 = 0;
+  int _value2 = 0;
   int _result = 0;
   String _selectedOperation = 'Selecciona una operación';
   String _operation = '';
@@ -20,54 +20,37 @@ class _HomePageState extends State<HomePage> {
   final NumberFormat _numberFormat = NumberFormat('#,##0');
 
   void _calculate() {
+    if (_operation.isEmpty) return;
+
     setState(() {
-      switch (_operation) {
-        case '+':
-          _result = _capturedValue + _capturedValue2;
-          break;
-        case '-':
-          _result = _capturedValue - _capturedValue2;
-          break;
-        case '*':
-          _result = _capturedValue * _capturedValue2;
-          break;
-        case '/':
-          _result = (_capturedValue2 == 0) ? 0 : _capturedValue ~/ _capturedValue2;
-          break;
-        default:
-          _result = 0;
-      }
+      _result = {
+        '+': _value1 + _value2,
+        '-': _value1 - _value2,
+        '*': _value1 * _value2,
+        '/': (_value2 == 0) ? 0 : _value1 ~/ _value2,
+      }[_operation] ?? 0;
     });
   }
 
   void _handleOperationChanged(String operation) {
+    const operationMap = {
+      'Suma': '+',
+      'Resta': '-',
+      'Multiplicación': '*',
+      'División': '/'
+    };
+
     setState(() {
-      switch (operation) {
-        case 'Suma':
-          _operation = '+';
-          break;
-        case 'Resta':
-          _operation = '-';
-          break;
-        case 'Multiplicación':
-          _operation = '*';
-          break;
-        case 'División':
-          _operation = '/';
-          break;
-      }
+      _operation = operationMap[operation] ?? '';
       _selectedOperation = operation;
     });
     _calculate();
   }
 
-  void _handleValueChanged(int index, value) {
+  void _handleValueChanged(int index, int value) {
     setState(() {
-      if (index == 1) {
-        _capturedValue = value;
-      } else {
-        _capturedValue2 = value;
-      }
+      if (index == 1) _value1 = value;
+      if (index == 2) _value2 = value;
     });
     _calculate();
   }
@@ -75,7 +58,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTextField(String title, int index) {
     return TextFieldCustom(
       title: title,
-      onChanged: (value) => _handleValueChanged(index, value),
+      onChanged: (value) => _handleValueChanged(index, int.parse(value)),
     );
   }
 
@@ -94,7 +77,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '${_numberFormat.format(_capturedValue)} $_operation ${_numberFormat.format(_capturedValue2)} = ${_numberFormat.format(_result)}',
+                '${_numberFormat.format(_value1)} $_operation ${_numberFormat.format(_value2)} = ${_numberFormat.format(_result)}',
                 style: const TextStyle(fontSize: 30),
                 textAlign: TextAlign.center,
               ),

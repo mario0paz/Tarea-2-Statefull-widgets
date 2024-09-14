@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:statefull_pratice/screens/home_page.dart';
+import 'package:Tarea-2-Statefull-widgets/screens/home_page.dart';
 
 void main() {
   runApp(const MyApp());
